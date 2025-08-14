@@ -6,31 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bouncing — Livestream</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
     <style>
-        /* 基础 */
         html,
         body {
             height: 100%;
-        }
-
-        body {
             margin: 0;
-            min-height: 100svh;
-            overflow: hidden;
-            color: #464646;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-weight: 300;
-            font-synthesis-weight: none;
             font-size: clamp(12px, 1.5vw, 14px);
             line-height: 1.35;
             letter-spacing: 0.05em;
             background: #d9d9d9;
-
+            color: #464646;
             display: grid;
             place-items: center;
             text-align: center;
             gap: 0.8rem;
-            padding: 12px;
+            padding: 15px;
+            overflow: hidden;
         }
 
         p {
@@ -41,7 +35,6 @@
             margin-top: .25em;
         }
 
-        /* RSVP 链接与 hover */
         a {
             color: #4f4f4f;
             text-decoration: underline;
@@ -60,38 +53,23 @@
             color: rgb(255, 238, 238);
         }
 
-        /* 视频：铺满且不出黑边（溢出裁切） */
         .video {
-            visibility: hidden;
-            height: 40svh;
-            width: min(92vw, calc(50svh * 16/9));
+            opacity: 0;
             position: relative;
-            overflow: hidden;
+            height: 30vh;
+            max-width: 92vw;
+            margin: 0 auto;
+            background: #d9d9d9;
         }
 
         .video iframe {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            height: 100%;
+            width: auto;
+            display: block;
+            margin: 0 auto;
             border: 0;
         }
 
-        /* 竖屏/高窄：按高算尺寸，宽超出被裁掉 */
-        @media (max-aspect-ratio: 16/9) {
-            .video iframe {
-                height: 40svh;
-                width: calc(40svh * 16 / 9);
-            }
-        }
-
-        /* 横屏/宽屏：按宽算尺寸，高超出被裁掉 */
-        @media (min-aspect-ratio: 16/9) {
-            .video iframe {
-                width: min(92vw, 100vw);
-                height: calc(min(92vw, 100vw) * 9 / 16);
-            }
-        }
 
         .credits {
             opacity: .6;
@@ -116,9 +94,9 @@
 
     <div class="video">
         <iframe src="https://www.youtube.com/embed/LHtzZf4T7xw?autoplay=1&mute=1&controls=0&playsinline=1"
-            title="YouTube video player"
-            allow="autoplay; encrypted-media; clipboard-write; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            title="YouTube" allow="autoplay; encrypted-media; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+        </iframe>
     </div>
 
     <p>Looping until collapse</p>
@@ -137,7 +115,7 @@
     </p>
 
     <script>
-        // 7PM BST = 18:00 UTC
+        // 倒计时
         const eventTime = new Date('2025-08-29T18:00:00Z');
         const el = document.getElementById('countdown');
         function updateCountdown() {
