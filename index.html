@@ -5,47 +5,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bouncing — Livestream</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <style>
+        /* 基础 */
         html,
-
+        body {
+            height: 100%;
+        }
 
         body {
-            height: 100svh;
+            margin: 0;
+            min-height: 100svh;
             overflow: hidden;
-            color: var(--text);
+            color: #464646;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-weight: 300;
+            font-synthesis-weight: none;
             font-size: clamp(12px, 1.5vw, 14px);
+            line-height: 1.35;
+            letter-spacing: 0.05em;
+            background: #d9d9d9;
 
             display: grid;
-            align-items: center;
-            justify-items: center;
+            place-items: center;
             text-align: center;
             gap: 0.8rem;
             padding: 12px;
-            background: #d9d9d9;
-            letter-spacing: 0.05em;
-
-            top: 40%;
-            left: 40%;
         }
 
         p {
             margin: 0;
         }
 
-
-        .top {
-            margin-top: 0.25em;
+        .top *+* {
+            margin-top: .25em;
         }
 
+        /* RSVP 链接与 hover */
+        a {
+            color: #4f4f4f;
+            text-decoration: underline;
+            transition: color .1s ease;
+        }
+
+        a:hover {
+            color: #ffffff;
+        }
+
+        .rsvp-link {
+            color: rgb(200, 74, 74);
+        }
+
+        .rsvp-link:hover {
+            color: rgb(255, 238, 238);
+        }
+
+        /* 视频：铺满且不出黑边（溢出裁切） */
         .video {
             visibility: hidden;
             height: 40svh;
             width: min(92vw, calc(50svh * 16/9));
             position: relative;
+            overflow: hidden;
         }
 
         .video iframe {
@@ -56,46 +77,25 @@
             border: 0;
         }
 
+        /* 竖屏/高窄：按高算尺寸，宽超出被裁掉 */
+        @media (max-aspect-ratio: 16/9) {
+            .video iframe {
+                height: 40svh;
+                width: calc(40svh * 16 / 9);
+            }
+        }
+
+        /* 横屏/宽屏：按宽算尺寸，高超出被裁掉 */
+        @media (min-aspect-ratio: 16/9) {
+            .video iframe {
+                width: min(92vw, 100vw);
+                height: calc(min(92vw, 100vw) * 9 / 16);
+            }
+        }
+
         .credits {
             opacity: .6;
-            margin-bottom: 0.4em;
-        }
-
-        a {
-            color: #4f4f4f;
-            text-decoration: underline;
-        }
-
-        a:hover {
-            color: #ffffff;
-            transition: color 0.1s ease;
-        }
-
-        .rsvp-link {
-            color: rgb(200, 74, 74);
-            text-decoration: underline;
-            transition: color 0.1s ease;
-        }
-
-        .rsvp-link:hover {
-            color: rgb(255, 238, 238);
-
-        }
-
-
-        @media (max-aspect-ratio: 16/9) {
-            .video-wrap iframe {
-                height: 50svh;
-                width: calc(50svh * 16 / 9);
-            }
-        }
-
-
-        @media (min-aspect-ratio: 16/9) {
-            .video-wrap iframe {
-                width: 100vw;
-                height: calc(100vw * 9 / 16);
-            }
+            margin-bottom: .4em;
         }
     </style>
 </head>
@@ -108,14 +108,12 @@
         <p>A live performance</p>
         <p>Begins in 29 August, 7PM BST</p>
     </div>
-    <div>
-        <br>
-        <span id="countdown"></span>
-    </div>
+
+    <div><br><span id="countdown"></span></div>
+
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeCtqqFxs4LppT6RYx4a902LFYFBjI4rZtWwvBUYjJbQAejOA/viewform"
-        target="_blank" class="rsvp-link">
-        RSVP
-    </a>
+        target="_blank" class="rsvp-link">RSVP</a>
+
     <div class="video">
         <iframe src="https://www.youtube.com/embed/LHtzZf4T7xw?autoplay=1&mute=1&controls=0&playsinline=1"
             title="YouTube video player"
@@ -124,6 +122,7 @@
     </div>
 
     <p>Looping until collapse</p>
+
     <div class="credits">
         <p>Performed by Violet Savage</p>
         <p>Directed by Ivory Pijin</p>
@@ -136,35 +135,24 @@
         <a href="https://www.instagram.com/bouncing.ing?utm_source=ig_web_button_share_sheet&igsh=MXVtdDVjdDY4dWxvMw=="
             target="_blank">Instagram</a>
     </p>
-    <br>
+
     <script>
+        // 7PM BST = 18:00 UTC
         const eventTime = new Date('2025-08-29T18:00:00Z');
-
+        const el = document.getElementById('countdown');
         function updateCountdown() {
-            const now = new Date();
-            let ms = eventTime - now;
-
-            if (ms <= 0) {
-                document.getElementById("countdown").textContent = "Event started!";
-                clearInterval(timer);
-                return;
-            }
-
-            const sec = Math.floor(ms / 1000);
-            const days = Math.floor(sec / 86400);
-            const hours = Math.floor((sec % 86400) / 3600);
-            const mins = Math.floor((sec % 3600) / 60);
-            const secs = sec % 60;
-
-            document.getElementById("countdown").textContent =
-                `${days}d ${hours}h ${mins}m ${secs}s`;
+            const ms = eventTime - new Date();
+            if (ms <= 0) { el.textContent = 'Event started!'; return; }
+            const s = Math.floor(ms / 1000);
+            const d = Math.floor(s / 86400);
+            const h = Math.floor((s % 86400) / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const sec = s % 60;
+            el.textContent = `${d}d ${h}h ${m}m ${sec}s`;
         }
-
         updateCountdown();
-        const timer = setInterval(updateCountdown, 1000);
+        setInterval(updateCountdown, 1000);
     </script>
-
-
 
 </body>
 
