@@ -124,12 +124,15 @@
     </p>
 
     <script>
-        // 倒计时
-        const eventTime = new Date('2025-08-29T18:00:00Z');
+        const eventTime = new Date('2025-08-29T18:30:00Z');
         const el = document.getElementById('countdown');
+
         function updateCountdown() {
             const ms = eventTime - new Date();
-            if (ms <= 0) { el.textContent = 'Event started!'; return; }
+            if (ms <= 0) {
+                el.textContent = 'Event started!';
+                return;
+            }
             const s = Math.floor(ms / 1000);
             const d = Math.floor(s / 86400);
             const h = Math.floor((s % 86400) / 3600);
@@ -137,6 +140,7 @@
             const sec = s % 60;
             el.textContent = `${d}d ${h}h ${m}m ${sec}s`;
         }
+
         updateCountdown();
         setInterval(updateCountdown, 1000);
     </script>
