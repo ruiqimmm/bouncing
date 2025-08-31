@@ -130,7 +130,7 @@
         function updateCountdown() {
             const ms = eventTime - new Date();
             if (ms <= 0) {
-                el.textContent = 'Event started!';
+                el.textContent = 'Event Ended';
                 return;
             }
             const s = Math.floor(ms / 1000);
